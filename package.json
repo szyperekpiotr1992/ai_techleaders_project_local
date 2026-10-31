@@ -1,26 +1,41 @@
 {
-  "name": "ai_techleaders_project_local",
+  "name": "@devmentor/workspace",
   "version": "0.1.0",
   "private": true,
+  "workspaces": [
+    "packages/*"
+  ],
   "scripts": {
-    "dev": "next dev",
-    "build": "next build",
-    "start": "next start",
-    "lint": "eslint"
-  },
-  "dependencies": {
-    "next": "16.4.2",
-    "react": "19.3.0",
-    "react-dom": "19.3.0"
+    "dev": "npm run dev --workspace @devmentor/app",
+    "build": "npm run build --workspace @devmentor/app",
+    "start": "npm run start --workspace @devmentor/app",
+    "lint": "eslint packages integration vitest.config.mts vitest.integration.config.mts",
+    "typecheck": "npm run typecheck --workspace @devmentor/app && npm run typecheck:tests",
+    "typecheck:tests": "tsc --noEmit -p tsconfig.tests.json",
+    "test": "npm run test:unit",
+    "test:unit": "vitest run --config vitest.config.mts --coverage",
+    "test:integration": "vitest run --config vitest.integration.config.mts",
+    "db:migrate": "npm run migrate --workspace @devmentor/db",
+    "db:migrate:down": "npm run migrate:down --workspace @devmentor/db"
   },
   "devDependencies": {
-    "@tailwindcss/turbopack": "^4",
+    "@testcontainers/postgresql": "^12.2.1",
     "@types/node": "^20",
     "@types/react": "^19",
     "@types/react-dom": "^19",
+    "@vitest/coverage-v8": "^4.1.2",
+    "agent-browser": "^0.39.2",
     "eslint": "^9",
-    "eslint-config-next": "16.4.2",
-    "tailwindcss": "^4",
-    "typescript": "^5"
+    "eslint-config-next": "16.4.3",
+    "tsx": "^4.23.15",
+    "typescript": "^5",
+    "vitest": "^4.1.2"
+  },
+  "allowScripts": {
+    "esbuild@0.28.2": true,
+    "unrs-resolver@1.12.2": true,
+    "protobufjs@7.6.6": true,
+    "agent-browser@0.39.2": true,
+    "ssh2@1.17.0": true
   }
 }
