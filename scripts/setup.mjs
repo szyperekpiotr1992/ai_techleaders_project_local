@@ -51,9 +51,9 @@ function getExitCode(code, signal) {
 export function getNpmInvocation(args, platform) {
   const isWindows = platform === "win32";
   return {
-    command: isWindows ? "npm.cmd" : "npm",
-    args,
-    shell: isWindows,
+    command: isWindows ? process.env.ComSpec || "cmd.exe" : "npm",
+    args: isWindows ? ["/d", "/s", "/c", `npm.cmd ${args.join(" ")}`] : args,
+    shell: false,
   };
 }
 

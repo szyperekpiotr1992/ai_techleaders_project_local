@@ -15,9 +15,9 @@ function createSpawn(child: ChildProcess) {
 describe("getNpmInvocation", () => {
   it("uses npm.cmd through a shell on Windows", () => {
     expect(getNpmInvocation(["ci"], "win32")).toEqual({
-      command: "npm.cmd",
-      args: ["ci"],
-      shell: true,
+      command: process.env.ComSpec || "cmd.exe",
+      args: ["/d", "/s", "/c", "npm.cmd ci"],
+      shell: false,
     });
   });
 
@@ -45,12 +45,12 @@ describe("runNpm", () => {
     });
 
     expect(spawn).toHaveBeenCalledWith(
-      "npm.cmd",
-      ["run", "dev"],
+      process.env.ComSpec || "cmd.exe",
+      ["/d", "/s", "/c", "npm.cmd run dev"],
       expect.objectContaining({
         cwd: "D:\\workspace",
         env: process.env,
-        shell: true,
+        shell: false,
         stdio: "inherit",
         windowsHide: true,
       }),
