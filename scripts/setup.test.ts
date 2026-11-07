@@ -52,7 +52,7 @@ describe("runNpm", () => {
     const signalTarget = new EventEmitter();
 
     const result = runNpm(["run", "dev"], {
-      cwd: "D:\\workspace",
+      cwd: process.cwd(),
       platform: "win32",
       spawn,
       signalTarget,
@@ -62,7 +62,7 @@ describe("runNpm", () => {
       process.env.ComSpec || "cmd.exe",
       ["/d", "/s", "/c", "npm.cmd run dev"],
       expect.objectContaining({
-        cwd: "D:\\workspace",
+        cwd: process.cwd(),
         env: process.env,
         shell: false,
         stdio: "inherit",
