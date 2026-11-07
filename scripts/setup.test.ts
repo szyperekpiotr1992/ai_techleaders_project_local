@@ -1,7 +1,11 @@
 import { EventEmitter } from "node:events";
 import type { ChildProcess, SpawnOptions } from "node:child_process";
-import { describe, expect, it, vi } from "vitest";
+import { afterEach, describe, expect, it, vi } from "vitest";
 import { getNpmInvocation, runNpm, runSetup } from "./setup.mjs";
+
+afterEach(() => {
+  vi.unstubAllEnvs();
+});
 
 function createSpawn(child: ChildProcess) {
   return vi.fn((command: string, args: string[], options: SpawnOptions) => {
@@ -13,9 +17,19 @@ function createSpawn(child: ChildProcess) {
 }
 
 describe("getNpmInvocation", () => {
-  it("uses npm.cmd through a shell on Windows", () => {
+  it("uses the configured command processor to launch npm.cmd on Windows", () => {
+    vi.stubEnv("ComSpec", "C:\\Windows\\System32\\cmd.exe");
     expect(getNpmInvocation(["ci"], "win32")).toEqual({
-      command: process.env.ComSpec || "cmd.exe",
+      command: "C:\\Windows\\System32\\cmd.exe",
+      args: ["/d", "/s", "/c", "npm.cmd ci"],
+      shell: false,
+    });
+  });
+
+  it("falls back to cmd.exe when ComSpec is unavailable", () => {
+    vi.stubEnv("ComSpec", "");
+    expect(getNpmInvocation(["ci"], "win32")).toEqual({
+      command: "cmd.exe",
       args: ["/d", "/s", "/c", "npm.cmd ci"],
       shell: false,
     });
