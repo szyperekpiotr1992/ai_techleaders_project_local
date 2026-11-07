@@ -36,6 +36,6 @@ PR: #4
 
 ### Phase 1: Setup command
 
-- [x] 1.1 Implement the dependency-free root installer and `npm run setup`, including conservative install validation, cross-platform npm spawning, and failure/signal handling. — 5665c1b3fd92146b6217afaa47a2c81f6932c5b1
-- [x] 1.2 Add unit tests for valid skip, missing/incomplete/stale/uncertain installs, install failure, dev failure, and child termination; include code/tests in lint, typecheck, and 100% unit coverage. — 5665c1b3fd92146b6217afaa47a2c81f6932c5b1
+- [x] 1.1 Implement the dependency-free root installer and `npm run setup`, including conservative install validation, cross-platform npm spawning, and failure/signal handling. — 5665c1b3fd92146b6217afaa47a2c81f6932c5b1 — 1fe1e2468b73e425b35a45a3aa131730465fd49b
+- [x] 1.2 Add unit tests for valid skip, missing/incomplete/stale/uncertain installs, install failure, dev failure, and child termination; include code/tests in lint, typecheck, and 100% unit coverage. — 5665c1b3fd92146b6217afaa47a2c81f6932c5b1 — c98dd3fef401b69e0f40f6f810f9d9910239d328
 - [x] 1.3 Update README setup instructions while preserving the manual commands and explicit migration guidance; run the configured validation gate and review the final diff. — a84108e6f36f159a5f3992b0556f148718b2a991
