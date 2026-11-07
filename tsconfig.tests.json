@@ -17,6 +17,8 @@
   "include": [
     "vitest.config.mts",
     "vitest.integration.config.mts",
+    "scripts/**/*.mjs",
+    "scripts/**/*.test.ts",
     "integration/**/*.ts",
     "packages/**/*.test.ts",
     "packages/**/*.test.tsx",
