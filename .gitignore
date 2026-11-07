@@ -16,9 +16,12 @@
 # next.js
 /.next/
 /out/
+**/.next/
+**/out/
 
 # production
 /build
+**/build/
 
 # misc
 .DS_Store
@@ -32,6 +35,7 @@ yarn-error.log*
 
 # env files (can opt-in for committing if needed)
 .env*
+!.env.example
 
 # vercel
 .vercel
@@ -39,3 +43,8 @@ yarn-error.log*
 # typescript
 *.tsbuildinfo
 next-env.d.ts
+
+# agent QA runtime artifacts
+.ai/qa/artifacts_*/
+.ai/qa/test-env.json
+.ai/qa/test-env.env

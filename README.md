@@ -1,36 +1,78 @@
-This is a [Next.js](https://nextjs.org) project bootstrapped with [`create-next-app`](https://nextjs.org/docs/app/api-reference/cli/create-next-app).
+# DevMentor
 
-## Getting Started
+DevMentor jest monorepo npm Workspaces z aplikacją TypeScript opartą o Next.js i React. Pakiety znajdują się w `packages/`.
 
-First, run the development server:
+## Architektura
 
-```bash
-npm run dev
-# or
-yarn dev
-# or
-pnpm dev
-# or
-bun dev
+```text
+.
+├── package.json                 # npm Workspaces i skrypty repozytorium
+└── packages/
+    ├── app/                     # Aplikacja Next.js i jej konfiguracja
+    │   ├── app/                 # Strony, layouty, trasy i globalne style
+    │   └── public/              # Statyczne zasoby aplikacji
+    ├── core/
+    │   └── src/index.ts         # Publiczny punkt wejścia logiki współdzielonej
+    ├── db/
+    │   └── src/index.ts         # Publiczny punkt wejścia persystencji
+    └── ui/
+        └── src/index.ts         # Publiczny punkt wejścia komponentów UI
 ```
 
-Open [http://localhost:3000](http://localhost:3000) with your browser to see the result.
+Pakiety `@devmentor/app`, `@devmentor/core`, `@devmentor/db` i `@devmentor/ui` są zadeklarowane jako npm Workspaces. Aplikacja Next.js oraz jej zasoby statyczne znajdują się w `packages/app`.
 
-You can start editing the page by modifying `app/page.tsx`. The page auto-updates as you edit the file.
+### Odpowiedzialność pakietów
 
-This project uses [`next/font`](https://nextjs.org/docs/app/building-your-application/optimizing/fonts) to automatically optimize and load [Geist](https://vercel.com/font), a new font family for Vercel.
+- **`packages/app`** — udostępnia aplikację Next.js, strony i trasy; pełni rolę composition root i integruje usługi przez Awilix.
+- **`packages/core`** — zawiera współdzielone reguły domenowe i typy bez zależności od Next.js, React ani MikroORM.
+- **`packages/db`** — obsługuje PostgreSQL przez MikroORM; utrzymuje encje, konfigurację połączeń/puli oraz migracje.
+- **`packages/ui`** — udostępnia wielokrotnego użytku komponenty UI; komponenty shadcn/ui dla ekranów administracyjnych powinny być współdzielone tutaj, a układ konkretnych stron pozostaje w aplikacji.
 
-## Learn More
+Utrzymuj acykliczny graf zależności. Pakiety współdzielone nie mogą zależeć od `packages/app`; logika domenowa należy do `packages/core`, persystencja do `packages/db`, a prezentacja do `packages/ui`.
 
-To learn more about Next.js, take a look at the following resources:
+## Technologie
 
-- [Next.js Documentation](https://nextjs.org/docs) - learn about Next.js features and API.
-- [Learn Next.js](https://nextjs.org/learn) - an interactive Next.js tutorial.
+- Next.js, React i TypeScript — aplikacja webowa.
+- PostgreSQL i MikroORM — relacyjna baza danych, persystencja i migracje.
+- Awilix — kontener Dependency Injection; konfiguruj i składaj zależności w composition root aplikacji.
+- Tailwind CSS — style interfejsu.
+- shadcn/ui — komponenty ekranów administracyjnych, współdzielone w pakiecie UI.
 
-You can check out [the Next.js GitHub repository](https://github.com/vercel/next.js) - your feedback and contributions are welcome!
+## Stan konfiguracji
 
-## Deploy on Vercel
+`packages/app` używa Next.js 16.4.3 i React 19.3.0, Tailwind CSS 4 oraz Awilix. `packages/db` deklaruje MikroORM 7 i adapter PostgreSQL. Pakiety aplikacji mogą importować pakiety współdzielone przez eksporty `@devmentor/*`; Next.js transpile'uje ich źródła z workspace. Konfiguracja połączenia PostgreSQL, pula, jawne polecenia migracji i lazy DI są gotowe; rzeczywiste połączenie wymaga `DATABASE_URL` i dostępnego serwera PostgreSQL. Rejestr encji pozostaje pusty do czasu zdefiniowania schematu domenowego. shadcn/ui nie zostało jeszcze zainicjalizowane — pozostałą fazę migracji opisuje `.ai/specs/monorepo-migration-plan.md`.
 
-The easiest way to deploy your Next.js app is to use the [Vercel Platform](https://vercel.com/new?utm_medium=default-template&filter=next.js&utm_source=create-next-app&utm_campaign=create-next-app-readme) from the creators of Next.js.
+### PostgreSQL i migracje
 
-Check out our [Next.js deployment documentation](https://nextjs.org/docs/app/building-your-application/deploying) for more details.
+Skonfiguruj `DATABASE_URL`, `DB_POOL_MAX` (domyślnie `10`, zakres `1–100`) i `DB_POOL_IDLE_TIMEOUT_MS` (domyślnie `30000`, zakres `1–300000`) w środowisku uruchomieniowym. `.env.example` zawiera wyłącznie lokalny przykład bez rzeczywistych danych dostępowych. Moduł `@devmentor/db` waliduje URL przed połączeniem, utrzymuje współdzieloną pulę MikroORM i wyszukuje migracje w `packages/db/migrations`.
+
+Uruchom migracje wyłącznie jawnie, po skonfigurowaniu środowiska:
+
+```bash
+npm run db:migrate
+npm run db:migrate:down
+```
+
+`db:migrate:down` cofa ostatnią migrację. Nie uruchamiaj poleceń migracji na współdzielonej bazie bez zatwierdzenia. Build i start aplikacji nie wykonują migracji ani nie otwierają połączenia z bazą automatycznie. Aplikacja rejestruje `databaseFactory` w kontenerze Awilix; pobranie fabryki nie łączy się z bazą.
+
+## Uruchamianie i kontrola
+
+Wymagania: Node.js oraz npm. Zainstaluj zależności i uruchom aplikację z katalogu głównego:
+
+```bash
+npm ci
+npm run dev
+```
+
+Dostępne kontrole z katalogu głównego:
+
+```bash
+npm run lint
+npm run typecheck
+npm test
+npm run test:unit
+npm run test:integration
+npm run build
+```
+
+`npm test` uruchamia Vitest z progami 100% pokrycia instrukcji, gałęzi, funkcji i linii dla kodu aplikacji, konfiguracji persystencji, warstwy dostępu do bazy oraz ekranów Next.js. `npm run test:integration` wymaga działającego Dockera: Testcontainers uruchamia tymczasowy PostgreSQL, test startuje zbudowaną aplikację i `agent-browser` sprawdza jej widok. Workflow GitHub Actions uruchamia lint, kontrolę typów, testy jednostkowe, build i test integracyjny przy każdym pull requeście.
