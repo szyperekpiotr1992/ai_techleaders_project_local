@@ -24,8 +24,8 @@ The install-state check must not skip repair when manifests, lockfile, or worksp
 
 ### Phase 1: Setup command
 
-- [ ] 1.1 Implement the dependency-free root installer and `npm run setup`, including conservative install validation, cross-platform npm spawning, and failure/signal handling.
-- [ ] 1.2 Add unit tests for valid skip, missing/incomplete/stale/uncertain installs, install failure, dev failure, and child termination; include code/tests in lint, typecheck, and 100% unit coverage.
+- 1.1 Implement the dependency-free root installer and `npm run setup`, including conservative install validation, cross-platform npm spawning, and failure/signal handling.
+- 1.2 Add unit tests for valid skip, missing/incomplete/stale/uncertain installs, install failure, dev failure, and child termination; include code/tests in lint, typecheck, and 100% unit coverage.
 - [ ] 1.3 Update README setup instructions while preserving the manual commands and explicit migration guidance; run the configured validation gate and review the final diff.
 
 ## Progress
@@ -34,6 +34,6 @@ The install-state check must not skip repair when manifests, lockfile, or worksp
 
 ### Phase 1: Setup command
 
-- [ ] 1.1 Implement the dependency-free root installer and `npm run setup`, including conservative install validation, cross-platform npm spawning, and failure/signal handling.
-- [ ] 1.2 Add unit tests for valid skip, missing/incomplete/stale/uncertain installs, install failure, dev failure, and child termination; include code/tests in lint, typecheck, and 100% unit coverage.
+- [x] 1.1 Implement the dependency-free root installer and `npm run setup`, including conservative install validation, cross-platform npm spawning, and failure/signal handling. — 5665c1b3fd92146b6217afaa47a2c81f6932c5b1
+- [x] 1.2 Add unit tests for valid skip, missing/incomplete/stale/uncertain installs, install failure, dev failure, and child termination; include code/tests in lint, typecheck, and 100% unit coverage. — 5665c1b3fd92146b6217afaa47a2c81f6932c5b1
 - [ ] 1.3 Update README setup instructions while preserving the manual commands and explicit migration guidance; run the configured validation gate and review the final diff.
