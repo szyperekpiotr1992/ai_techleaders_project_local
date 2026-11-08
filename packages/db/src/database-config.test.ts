@@ -97,17 +97,22 @@ describe("createDatabaseOptions", () => {
 
 describe("getMigrationsDirectory", () => {
   it("resolves migrations from the app workspace, db workspace, or repository root", () => {
-    assert.equal(
-      getMigrationsDirectory("D:\\repo\\packages\\app"),
-      "D:\\repo\\packages\\db\\migrations",
+    const repositoryRoot = resolve("repo");
+    const expectedMigrationsDirectory = resolve(
+      repositoryRoot,
+      "packages",
+      "db",
+      "migrations",
     );
+
     assert.equal(
-      getMigrationsDirectory("D:\\repo"),
-      "D:\\repo\\packages\\db\\migrations",
+      getMigrationsDirectory(resolve(repositoryRoot, "packages", "app")),
+      expectedMigrationsDirectory,
     );
+    assert.equal(getMigrationsDirectory(repositoryRoot), expectedMigrationsDirectory);
     assert.equal(
-      getMigrationsDirectory("D:\\repo\\packages\\db"),
-      "D:\\repo\\packages\\db\\migrations",
+      getMigrationsDirectory(resolve(repositoryRoot, "packages", "db")),
+      expectedMigrationsDirectory,
     );
   });
 });

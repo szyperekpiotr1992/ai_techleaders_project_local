@@ -57,12 +57,22 @@ npm run db:migrate:down
 
 ## Uruchamianie i kontrola
 
-Wymagania: Node.js oraz npm. Zainstaluj zależności i uruchom aplikację z katalogu głównego:
+Wymagania: Node.js oraz npm. Najprostszą ścieżką jest uruchomienie z katalogu głównego:
+
+```bash
+npm run setup
+```
+
+Polecenie weryfikuje zainstalowane zależności, naprawia brakującą lub niezgodną instalację przez `npm ci`, a następnie uruchamia serwer deweloperski. Terminal pozostaje podłączony do serwera; zatrzymaj go przez `Ctrl+C`. Przy błędzie instalacji aplikacja nie zostanie uruchomiona.
+
+Ręczna alternatywa pozostaje dostępna:
 
 ```bash
 npm ci
 npm run dev
 ```
+
+`npm run setup` nie uruchamia migracji ani nie łączy się z bazą danych. Migracje PostgreSQL pozostają jawnym, osobnym krokiem opisanym wyżej.
 
 Dostępne kontrole z katalogu głównego:
 

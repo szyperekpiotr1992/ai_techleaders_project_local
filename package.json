@@ -6,10 +6,11 @@
     "packages/*"
   ],
   "scripts": {
+    "setup": "node scripts/setup-cli.mjs",
     "dev": "npm run dev --workspace @devmentor/app",
     "build": "npm run build --workspace @devmentor/app",
     "start": "npm run start --workspace @devmentor/app",
-    "lint": "eslint packages integration vitest.config.mts vitest.integration.config.mts",
+    "lint": "eslint packages integration scripts vitest.config.mts vitest.integration.config.mts",
     "typecheck": "npm run typecheck --workspace @devmentor/app && npm run typecheck:tests",
     "typecheck:tests": "tsc --noEmit -p tsconfig.tests.json",
     "test": "npm run test:unit",
